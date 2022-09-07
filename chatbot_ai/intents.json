@@ -1,0 +1,32 @@
+{
+  "intents": [
+    {
+      "tag": "powitania",
+      "patterns": [
+        "Cześć",
+        "Hej",
+        "Dzień dobry",
+        "Dobry wieczór"
+      ],
+      "responses": [
+        "Witaj",
+        "Dobry wieczór",
+        "Dzień dobry"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "jaranie",
+      "patterns": [
+        "ale bym przysmrodzil",
+        "tuba",
+        "szybkie wiadro"
+      ],
+      "responses": [
+        "ZIOLO",
+        "marihuana leczy zywia nas i ubiera"
+      ],
+      "context_set": ""
+    }
+  ]
+}

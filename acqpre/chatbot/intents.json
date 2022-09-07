@@ -1,0 +1,33 @@
+{
+  "intents": [
+    {
+      "tag": "powitania",
+      "patterns": [
+        "Cześć",
+        "Hej",
+        "Dzień dobry",
+        "Dobry wieczór"
+      ],
+      "responses": [
+        "Witaj",
+        "Dobry wieczór",
+        "Dzień dobry"
+      ],
+      "context_set": ""
+    },
+    {
+      "tag": "samopoczucie",
+      "patterns": [
+        "jak się czujesz?",
+        "jak tam?",
+        "co tam?"
+      ],
+      "responses": [
+        "dobrze",
+        "świetnie, dziękuję",
+        "super"
+      ],
+      "context_set": ""
+    }
+  ]
+}
