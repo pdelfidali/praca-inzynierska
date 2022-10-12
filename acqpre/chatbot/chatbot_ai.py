@@ -1,12 +1,9 @@
-import json
-import os
-import random
-
 import nltk
 import numpy as np
 import tensorflow as tf
 import tflearn
 from nltk.stem.lancaster import LancasterStemmer
+
 from .models import Tag, Pattern, Response
 
 stemmer = LancasterStemmer()
@@ -98,8 +95,7 @@ def chat(inp):
     results_index = np.argmax(results)
     tag = labels[results_index]
     x = Response.objects.get(tag__name=tag)
-    print(x)
-    return x.text
+    return x
 
 
 def get_data():

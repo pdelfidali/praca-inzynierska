@@ -43,7 +43,7 @@
             <textarea id="user_input" class="form-control" rows="3"></textarea>
             {% csrf_token %}
             <button type="submit" id="user_submit" class="btn btn-primary"
-                    onclick="sendMessage(document.querySelector('[name=csrfmiddlewaretoken]').value)">Wyślij
+                    onclick="sendMessage()">Wyślij
             </button>
         </div>
     </div>
