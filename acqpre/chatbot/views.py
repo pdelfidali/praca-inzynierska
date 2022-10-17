@@ -17,7 +17,8 @@ def api(request: HttpRequest):
         data = json.loads(request.body)
         chat_response: Response = chat(data['user_input'])
         response = json.dumps(
-            {'message': chat_response.text, 'tag': chat_response.tag.name, 'legal_basis': chat_response.legal_basis})
+            {'message': chat_response.text, 'tag': chat_response.tag.name, 'legal_basis': chat_response.legal_basis,
+             'source': chat_response.source})
         return HttpResponse(response, content_type='application/json')
     return redirect('index')
 

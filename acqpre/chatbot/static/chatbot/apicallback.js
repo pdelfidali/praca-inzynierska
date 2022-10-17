@@ -1,4 +1,4 @@
-function displayMessage(text, is_user = 0) {
+function displayMessage(text, is_user = 0, href='') {
     const message = document.createElement('p')
     message.innerHTML = text
     if (is_user === 1) {
@@ -10,8 +10,10 @@ function displayMessage(text, is_user = 0) {
     chat.appendChild(message)
     chat.style.overflowY = 'scroll';
     if (!document.cookie.includes("Powitanie") && is_user === 0) {
+        addSource(href)
         addRatingButtons()
     }
+
     addSeparator()
 }
 
@@ -29,7 +31,7 @@ function sendMessage() {
         if (xhr.status === 200) {
             let responseMessage = JSON.parse(this.response)
             document.cookie = "tag=" + responseMessage.tag
-            displayMessage(responseMessage.message, 0)
+            displayMessage(responseMessage.message, 0, responseMessage.source)
         }
     }
 
@@ -113,4 +115,13 @@ function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+
+function addSource(href) {
+    let div = document.createElement("div")
+    div.className = 'mb-3'
+    let inner = `<a target="_blank" class="btn btn-primary" href="` + href +`"> Źródło </a>`
+    div.innerHTML = inner
+    document.getElementById("chat").appendChild(div)
 }
