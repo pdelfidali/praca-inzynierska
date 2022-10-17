@@ -10,9 +10,10 @@ class Tag(models.Model):
 
 
 class Response(models.Model):
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, unique=True)
+    tag = models.OneToOneField(Tag, on_delete=models.CASCADE, unique=True)
     text = models.TextField(max_length=2500, unique=True)
-    legal_basis = models.CharField(max_length=250)
+    legal_basis = models.CharField(max_length=250, null=True)
+    source = models.CharField(max_length=250, null=True)
     moderator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
@@ -20,7 +21,7 @@ class Response(models.Model):
 
 
 class Pattern(models.Model):
-    text = models.CharField(max_length=1000)
+    text = models.TextField(max_length=1000)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
 
     def __str__(self):
