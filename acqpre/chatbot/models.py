@@ -13,7 +13,7 @@ class Response(models.Model):
     tag = models.OneToOneField(Tag, on_delete=models.CASCADE, unique=True)
     text = models.TextField(max_length=2500, unique=True)
     legal_basis = models.CharField(max_length=250, null=True)
-    source = models.CharField(max_length=250, null=True)
+    source = models.URLField(max_length=250, blank=True, null=True)
     moderator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
@@ -22,7 +22,7 @@ class Response(models.Model):
 
 class Pattern(models.Model):
     text = models.TextField(max_length=1000)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f'{self.text} [{self.tag}]'
