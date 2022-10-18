@@ -1,4 +1,4 @@
-function displayMessage(text, is_user = 0, href='') {
+function displayMessage(text, is_user = 0, href=null) {
     const message = document.createElement('p')
     message.innerHTML = text
     if (is_user === 1) {
@@ -10,7 +10,9 @@ function displayMessage(text, is_user = 0, href='') {
     chat.appendChild(message)
     chat.style.overflowY = 'scroll';
     if (!document.cookie.includes("Powitanie") && is_user === 0) {
-        addSource(href)
+        if (href){
+            addSource(href)
+        }
         addRatingButtons()
     }
 
