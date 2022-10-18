@@ -41,8 +41,10 @@ class RatingAdmin(admin.ModelAdmin):
 
 
 class ResponseAdmin(admin.ModelAdmin):
-    list_display = ['tag', 'legal_basis', 'source', 'moderator', 'rating_avg', 'rating_no']
-    list_filter = ['moderator']
+    list_display = ['tag', 'legal_basis', 'source', 'moderator', 'legal_status_as_of', 'last_edit', 'rating_avg',
+                    'rating_no']
+    list_filter = ['moderator', 'last_edit', 'legal_status_as_of']
+    readonly_fields = ['last_edit']
     search_fields = ['tag__name', 'legal_basis']
 
     @admin.display(description='Ilość ocen')
