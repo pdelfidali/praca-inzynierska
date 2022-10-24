@@ -20,6 +20,8 @@ class PatternInLine(admin.StackedInline):
 class TagAdmin(admin.ModelAdmin):
     inlines = [ResponseInLine, PatternInLine, ]
     search_fields = ['name']
+    list_display = ['name', 'amount']
+    sortable_by = ['amount']
 
 
 class PatternAdmin(admin.ModelAdmin):

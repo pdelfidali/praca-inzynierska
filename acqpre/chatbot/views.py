@@ -16,6 +16,8 @@ def api(request: HttpRequest):
     if request.method == 'POST':
         data = json.loads(request.body)
         chat_response: Response = chat(data['user_input'])
+        chat_response.tag.amount += 1
+        chat_response.tag.save()
         response = json.dumps(
             {'message': chat_response.text, 'tag': chat_response.tag.name, 'legal_basis': chat_response.legal_basis,
              'source': chat_response.source})
@@ -26,7 +28,7 @@ def api(request: HttpRequest):
 def about(request: HttpRequest):
     return render(request, "chatbot/about.html")
 
-
+#TODO: zgłaszanie odpowiedzi
 def retrain(request: HttpRequest):
     get_data()
     return {'message': 'retraining'}

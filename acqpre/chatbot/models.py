@@ -7,6 +7,7 @@ from django.db import models
 
 class Tag(models.Model):
     name = models.CharField(max_length=30)
+    amount = models.IntegerField(default=0, verbose_name="Ilość zwróconych odpowiedzi")
 
     def __str__(self):
         return self.name
@@ -33,9 +34,7 @@ class Response(models.Model):
     def __str__(self):
         return f'{self.text} [{self.tag}]'
 
-    def save(
-            self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         self.last_edit = datetime.datetime.now()
         super().save()
 
