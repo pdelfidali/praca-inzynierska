@@ -1,4 +1,4 @@
-function displayMessage(text, is_user = 0, href=null) {
+function displayMessage(text, is_user = 0, href = null) {
     const message = document.createElement('p')
     message.innerHTML = text
     if (is_user === 1) {
@@ -10,7 +10,7 @@ function displayMessage(text, is_user = 0, href=null) {
     chat.appendChild(message)
     chat.style.overflowY = 'scroll';
     if (!document.cookie.includes("Powitanie") && is_user === 0) {
-        if (href){
+        if (href) {
             addSource(href)
         }
         addRatingButtons()
@@ -91,6 +91,9 @@ function addRatingButtons() {
             </svg>
             <span class="visually-hidden">Button</span>
         </button>
+        <button type="button"  class="btn btn-outline-secondary" onclick="openReportWindow()" style="font-size: small; color: black">
+            Zgłoś odpowiedź.
+        </button>
     `
     div.appendChild(div2)
     document.getElementById("chat").appendChild(div)
@@ -123,7 +126,28 @@ function getCookie(name) {
 function addSource(href) {
     let div = document.createElement("div")
     div.className = 'mb-3'
-    let inner = `<a target="_blank" class="btn btn-primary" href="` + href +`"> Źródło </a>`
+    let inner = `<a target="_blank" class="btn btn-primary" href="` + href + `"> Źródło </a>`
     div.innerHTML = inner
     document.getElementById("chat").appendChild(div)
+}
+
+
+function openReportWindow(tag) {
+    window.open("/report", '', "width=600,height=480,toolbar=no,menubar=no,resizable=yes");
+}
+
+function sendReport() {
+    let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    let user_input = document.getElementById("user_input")
+    let category = document.getElementById("category")
+
+    const json = {"user_input": user_input.value, "tag": getCookie("tag"), "category": category}
+    let xhr = new XMLHttpRequest()
+    xhr.open('POST', '/report/')
+    xhr.setRequestHeader("X-CSRFToken", csrfToken)
+    xhr.setRequestHeader('Content-Type', 'application/json')
+    xhr.onload = function () {
+        window.close()
+    }
+    xhr.send(JSON.stringify(json));
 }

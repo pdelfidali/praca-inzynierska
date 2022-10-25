@@ -78,3 +78,24 @@ class Rating(models.Model):
         unique_together = ('response', 'ip')
         verbose_name_plural = "Oceny"
         verbose_name = "Ocena"
+
+
+class Report(models.Model):
+    response = models.ForeignKey(Response, on_delete=models.CASCADE, verbose_name="Odpowiedź")
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, verbose_name="Tag")
+    CATEGORY1 = 'CAT1'
+    CATEGORY2 = 'CAT2'
+    CATEGORY3 = 'CAT3'
+    NOCATEGORY = 'NOCAT'
+    CATEGORY_CHOICES = [(CATEGORY1, 'Kategoria 1'), (CATEGORY2, 'Kategoria 2'), (CATEGORY3, 'Kategoria 3'),
+                        (NOCATEGORY, 'Brak')]
+    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default=NOCATEGORY,
+                                verbose_name="Kategoria zgłoszenia")
+    text = models.TextField(max_length=2500, verbose_name='Tekst')
+
+    class Meta:
+        verbose_name_plural = "Zgłoszenia"
+        verbose_name = "Zgłoszenie"
+
+    def __str__(self):
+        return f"Zgłoszenie dotyczące odpowiedzi z tagiem: {self.tag.name}"

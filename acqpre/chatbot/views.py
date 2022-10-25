@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 
 from .chatbot_ai import get_data, chat
-from .models import Response, Rating, Tag
+from .models import Response, Rating, Tag, Report
 
 
 def index(request: HttpRequest):
@@ -28,7 +28,7 @@ def api(request: HttpRequest):
 def about(request: HttpRequest):
     return render(request, "chatbot/about.html")
 
-#TODO: zgłaszanie odpowiedzi
+
 def retrain(request: HttpRequest):
     get_data()
     return {'message': 'retraining'}
@@ -48,3 +48,19 @@ def rateResponse(request: HttpRequest):
             rating.save()
         return HttpResponse(status='200')
     return redirect('index')
+
+
+def reportResponse(request: HttpRequest):
+    if request.method == 'GET':
+        return render(request, 'chatbot/report.html')
+    elif request.method == 'POST':
+        data = json.loads(request.body)
+        tag = Tag.objects.get(name=data['tag'])
+        response = Response.objects.get(tag=tag)
+        category = data['category']
+        text = data['user_input']
+        report = Report(response=response, tag=tag, category=category, text=text)
+        report.save()
+        return HttpResponse(status=200)
+    else:
+        return redirect('index')

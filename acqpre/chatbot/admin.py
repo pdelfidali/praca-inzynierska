@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db.models import Avg
 
-from .models import Tag, Response, Pattern, Rating
+from .models import Tag, Response, Pattern, Rating, Report
 
 
 # Register your models here.
@@ -62,7 +62,9 @@ class ResponseAdmin(admin.ModelAdmin):
         return ratings
 
 
+# TODO: Zrobić admina dla Reportów
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Response, ResponseAdmin)
 admin.site.register(Pattern, PatternAdmin)
 admin.site.register(Rating, RatingAdmin)
+admin.site.register(Report)
