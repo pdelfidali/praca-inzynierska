@@ -43,11 +43,12 @@ class RatingAdmin(admin.ModelAdmin):
 
 
 class ResponseAdmin(admin.ModelAdmin):
-    list_display = ['tag', 'legal_basis', 'source', 'moderator', 'legal_status_as_of', 'last_edit', 'rating_avg',
-                    'rating_no']
-    list_filter = ['moderator', 'last_edit', 'legal_status_as_of']
-    readonly_fields = ['last_edit']
+    list_display = ['tag', 'response_status', 'legal_basis', 'source', 'moderator', 'legal_status_as_of', 'last_edit',
+                    'rating_avg', 'rating_no']
+    list_filter = ['moderator', 'response_status']
+    readonly_fields = ['last_edit', 'response_status']
     search_fields = ['tag__name', 'legal_basis']
+    sortable_by = ['last_edit', 'legal_status_as_of']
 
     @admin.display(description='Ilość ocen')
     def rating_no(self, obj):
