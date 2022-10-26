@@ -45,7 +45,10 @@ class Response(models.Model):
     last_edit = models.DateTimeField(default=datetime.datetime.now(), verbose_name="Ostatnio edytowany")
 
     def __str__(self):
-        return f'{self.text} [{self.tag}]'
+        if len(self.text) > 50:
+            return f'{self.tag}: {self.text[:50]}...'
+        else:
+            return f'{self.tag}: {self.text}'
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         self.last_edit = datetime.datetime.now()
@@ -83,15 +86,22 @@ class Rating(models.Model):
 class Report(models.Model):
     response = models.ForeignKey(Response, on_delete=models.CASCADE, verbose_name="Odpowiedź")
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, verbose_name="Tag")
-    CATEGORY1 = 'CAT1'
-    CATEGORY2 = 'CAT2'
-    CATEGORY3 = 'CAT3'
-    NOCATEGORY = 'NOCAT'
-    CATEGORY_CHOICES = [(CATEGORY1, 'Kategoria 1'), (CATEGORY2, 'Kategoria 2'), (CATEGORY3, 'Kategoria 3'),
-                        (NOCATEGORY, 'Brak')]
-    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default=NOCATEGORY,
+    UNRELATED = 'UNRELATED'
+    INCOMPLETE = 'INCOMPLETE'
+    INCOMPREHENSIBLE = 'INCOMPREHENSIBLE'
+    OUTDATED = 'OUTDATED'
+    LINGUISTIC_ERRORS = 'LINGUISTIC_ERRORS'
+    OTHER = 'OTHER'
+    CATEGORY_CHOICES = [(UNRELATED, 'Odpowiedź nie jest związana z zadanym pytaniem'),
+                        (INCOMPLETE, 'Odpowiedź na zadane pytanie jest niekompletna'),
+                        (INCOMPREHENSIBLE, 'Odpowiedź jest niezrozumiała'),
+                        (OUTDATED, 'Odpowiedź nie jest zgodna z obowiązującymi przepisami'),
+                        (LINGUISTIC_ERRORS, 'Odpowiedź wymaga poprawy błędów językowych'),
+                        (OTHER, 'Inny')]
+    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default=OTHER,
                                 verbose_name="Kategoria zgłoszenia")
     text = models.TextField(max_length=2500, verbose_name='Tekst')
+    timestamp = models.DateTimeField(default=datetime.datetime.now(), verbose_name="Data zgłoszenia")
 
     class Meta:
         verbose_name_plural = "Zgłoszenia"

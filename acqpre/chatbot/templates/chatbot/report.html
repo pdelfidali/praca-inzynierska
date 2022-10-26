@@ -21,16 +21,22 @@
     </p>
 </div>
 <div class="container p-5 my-5 border">
-    {% csrf_token %}
-    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="category">
-        <option selected>Wybierz powód zgłoszenia</option>
-        <option value="CAT1">Powód 1</option>
-        <option value="CAT2">Powód 2</option>
-        <option value="NOCAT">Powód 3</option>
-    </select>
     <div class="mb-3">
-        <label for="exampleFormControlTextarea1" class="form-label">Opisz bardziej szczegółowo powód zgłoszenia</label>
-        <textarea id="user_input" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        <label for="category" class="form-label">Wybierz powód zgłoszenia</label>
+        {% csrf_token %}
+        <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="category">
+            <option value="UNRELATED" selected>Odpowiedź nie jest związana z zadanym pytaniem</option>
+            <option value="INCOMPLETE">Odpowiedź na zadane pytanie jest niekompletna</option>
+            <option value="INCOMPREHENSIBLE">Odpowiedź jest niezrozumiała</option>
+            <option value="OUTDATED">Odpowiedź nie jest zgodna z obowiązującymi przepisami</option>
+            <option value="LINGUISTIC_ERRORS">Odpowiedź wymaga poprawy błędów językowych</option>
+            <option value="OTHER">Inny</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="user_input" class="form-label">Opisz bardziej szczegółowo powód
+            zgłoszenia</label>
+        <textarea id="user_input" class="form-control" rows="3"></textarea>
     </div>
     <div class="mb-3">
         <button id="submit" type="submit" class="btn btn-primary mb-3" onclick="sendReport()">Prześlij</button>

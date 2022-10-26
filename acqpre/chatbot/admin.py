@@ -17,6 +17,10 @@ class PatternInLine(admin.StackedInline):
     extra = 1
 
 
+class TagInLine(admin.StackedInline):
+    model = Tag
+
+
 class TagAdmin(admin.ModelAdmin):
     inlines = [ResponseInLine, PatternInLine, ]
     search_fields = ['name']
@@ -62,9 +66,15 @@ class ResponseAdmin(admin.ModelAdmin):
         return ratings
 
 
-# TODO: Zrobić admina dla Reportów
+class ReportAdmin(admin.ModelAdmin):
+    list_display = ['timestamp', 'tag', 'category', 'text', 'response']
+    list_filter = ['category']
+    search_fields = ['tag', 'response']
+    sortable_by = ['timestamp', 'tag']
+
+
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Response, ResponseAdmin)
 admin.site.register(Pattern, PatternAdmin)
 admin.site.register(Rating, RatingAdmin)
-admin.site.register(Report)
+admin.site.register(Report, ReportAdmin)
