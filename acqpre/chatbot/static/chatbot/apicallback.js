@@ -139,7 +139,7 @@ function openReportWindow(tag) {
 function sendReport() {
     let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
     let user_input = document.getElementById("user_input").value
-    let category = document.getElementById("category")
+    let category = document.getElementById("category").value
     const json = {"user_input": user_input, "tag": getCookie("tag"), "category": category}
     let xhr = new XMLHttpRequest()
     xhr.open('POST', '/report/')
