@@ -1,5 +1,7 @@
+import fire.test_components
 from django.contrib import admin
 from django.db.models import Avg
+from django.http import HttpRequest
 
 from .models import Tag, Response, Pattern, Rating, Report
 
@@ -50,9 +52,20 @@ class ResponseAdmin(admin.ModelAdmin):
     list_display = ['tag', 'response_status', 'legal_basis', 'source', 'moderator', 'legal_status_as_of', 'last_edit',
                     'rating_avg', 'rating_no']
     list_filter = ['moderator', 'response_status']
-    readonly_fields = ['last_edit', 'response_status']
     search_fields = ['tag__name', 'legal_basis']
     sortable_by = ['last_edit', 'legal_status_as_of']
+
+    def get_readonly_fields(self, request: HttpRequest, obj=None):
+        if request.user.is_superuser:
+            return ['last_edit']
+        else:
+            return ['moderator', 'last_edit', 'response_status']
+
+    def save_model(self, request, obj: Response, form, change):
+        if not request.user.is_superuser:
+            obj.response_status = Response.FIXED
+            obj.moderator = request.user
+        super().save_model(request, obj, form, change)
 
     @admin.display(description='Ilość ocen')
     def rating_no(self, obj):

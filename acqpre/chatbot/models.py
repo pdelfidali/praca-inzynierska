@@ -17,6 +17,8 @@ class Tag(models.Model):
         verbose_name = "Tag"
 
 
+# TODO: dodać do tagu bool czy jest aktywny (możliwy do zwrócenia przez bota, jeżeli nieaktywny to zmień na domyślną
+#  wiadomość), który będzie automatycznie zmieniany przez zmian statusu administratora
 class Response(models.Model):
     def validate_date(self):
         if self > datetime.date.today():
@@ -24,11 +26,9 @@ class Response(models.Model):
 
     NEED_THE_UPDATE = 'NEED_THE_UPDATE'
     NEED_CLARIFICATION = 'NEED_CLARIFICATION'
-    NO_RESPONSE = 'NO_RESPONSE'
     OK = 'OK'
     FIXED = 'FIXED'
-    STATUS_CHOICES = [(NEED_THE_UPDATE, "Odpowiedź wymaga zmiany/rozszerzenia"),
-                      (NO_RESPONSE, "Nie ma jeszcze dodanej odpowiedzi"),
+    STATUS_CHOICES = [(NEED_THE_UPDATE, "Odpowiedź wymaga zaktualizowania"),
                       (NEED_CLARIFICATION, "Odpowiedź wymaga zmiany/rozszerzenia"),
                       (OK, "Odpowiedź poprawna"),
                       (FIXED, "Oczekuje na sprawdzenie przez administratora."), ]
@@ -38,7 +38,7 @@ class Response(models.Model):
     legal_basis = models.CharField(max_length=250, null=True, verbose_name="Podstawa prawna")
     source = models.URLField(max_length=250, blank=True, null=True, verbose_name="Źródło informacji")
     moderator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    response_status = models.CharField(max_length=100, choices=STATUS_CHOICES, default=NO_RESPONSE,
+    response_status = models.CharField(max_length=100, choices=STATUS_CHOICES, default=FIXED,
                                        verbose_name="Status odpowiedzi:")
     legal_status_as_of = models.DateField(default=datetime.date.today(), verbose_name="Stan prawny na",
                                           validators=[validate_date, ])
