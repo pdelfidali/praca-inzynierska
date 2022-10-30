@@ -9,7 +9,7 @@ function displayMessage(text, is_user = 0, href = null) {
     let chat = document.getElementById("chat")
     chat.appendChild(message)
     chat.style.overflowY = 'scroll';
-    if (!document.cookie.includes("Powitanie") && is_user === 0) {
+    if (!document.cookie.includes("Powitanie") && !document.cookie.includes("nierozpoznane zapytanie") && !document.cookie.includes("Pożegnanie") && is_user === 0) {
         if (href) {
             addSource(href)
         }
@@ -22,22 +22,25 @@ function displayMessage(text, is_user = 0, href = null) {
 function sendMessage() {
     let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
     let user_input = document.getElementById("user_input")
-    const json = {"user_input": user_input.value}
-    let xhr = new XMLHttpRequest()
-    displayMessage(user_input.value, 1)
-    user_input.value = ''
-    xhr.open('POST', '/api/')
-    xhr.setRequestHeader("X-CSRFToken", csrfToken)
-    xhr.setRequestHeader('Content-Type', 'application/json')
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            let responseMessage = JSON.parse(this.response)
-            document.cookie = "tag=" + responseMessage.tag
-            displayMessage(responseMessage.message, 0, responseMessage.source)
+    if (user_input.value) {
+        const json = {"user_input": user_input.value}
+        let xhr = new XMLHttpRequest()
+        displayMessage(user_input.value, 1)
+        user_input.value = ''
+        xhr.open('POST', '/api/')
+        xhr.setRequestHeader("X-CSRFToken", csrfToken)
+        xhr.setRequestHeader('Content-Type', 'application/json')
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                let responseMessage = JSON.parse(this.response)
+                document.cookie = "tag=" + responseMessage.tag
+                displayMessage(responseMessage.message, 0, responseMessage.source)
+            }
         }
+        xhr.send(JSON.stringify(json));
+    } else {
+        alert("Napisz treść wiadomości przed wysłaniem.")
     }
-
-    xhr.send(JSON.stringify(json));
 }
 
 function addSeparator() {
@@ -46,7 +49,7 @@ function addSeparator() {
 }
 
 function addRatingButtons() {
-    var rating = document.getElementById("rating")
+    const rating = document.getElementById("rating");
     if (rating) {
         rating.remove()
     }
@@ -102,8 +105,7 @@ function addRatingButtons() {
 function rate(rating) {
     let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
     const json = {
-        "rating": rating,
-        "responseTag": getCookie("tag")
+        "rating": rating, "responseTag": getCookie("tag")
     }
     let xhr = new XMLHttpRequest()
     xhr.open("POST", '/rate/')
