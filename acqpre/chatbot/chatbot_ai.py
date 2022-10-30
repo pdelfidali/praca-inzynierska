@@ -10,6 +10,8 @@ stemmer = LancasterStemmer()
 model = None
 labels = None
 words = None
+THRESHOLD = 0.7
+UNDER_THRESHOLD_TAG = 'nierozpoznane zapytanie'
 
 
 def train_model():
@@ -19,6 +21,19 @@ def train_model():
     labels = []
     docs_x = []
     docs_y = []
+    tag = None
+    try:
+        tag = Tag.objects.get(name=UNDER_THRESHOLD_TAG)
+    except Tag.DoesNotExist:
+        tag = Tag(name=UNDER_THRESHOLD_TAG)
+        tag.save()
+    try:
+        Response.objects.get(tag__name=UNDER_THRESHOLD_TAG)
+    except Response.DoesNotExist:
+        response = Response(tag=tag,
+                            text='Nie zrozumiałem Twojego pytania, zapisuję pytanie do bazy danych.',
+                            response_status=Response.OK)
+        response.save()
 
     for tag in Tag.objects.all():
         for pattern in Pattern.objects.filter(tag=tag):
@@ -92,10 +107,16 @@ def chat(inp):
     if not model:
         train_model()
     results = model.predict([bag_of_words(inp, words)])
-    results_index = np.argmax(results)
-    tag = labels[results_index]
-    x = Response.objects.get(tag__name=tag)
-    return x
+    print(np.max(results))
+    if np.max(results) > THRESHOLD:
+        results_index = np.argmax(results)
+        tag = labels[results_index]
+        x = Response.objects.get(tag__name=tag)
+        return x
+    else:
+        pattern = Pattern(text=inp)
+        pattern.save()
+        return Response.objects.get(tag__name=UNDER_THRESHOLD_TAG)
 
 
 def get_data():

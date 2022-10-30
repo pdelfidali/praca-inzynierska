@@ -1,4 +1,3 @@
-import fire.test_components
 from django.contrib import admin
 from django.db.models import Avg
 from django.http import HttpRequest
@@ -31,10 +30,11 @@ class TagAdmin(admin.ModelAdmin):
 
 
 class PatternAdmin(admin.ModelAdmin):
-    list_display = ['text', 'tag']
+    list_display = ['text', 'tag', 'timestamp']
     list_editable = ['tag']
     list_filter = ['tag']
     autocomplete_fields = ['tag']
+    readonly_fields = ['timestamp']
 
 
 class RatingAdmin(admin.ModelAdmin):
@@ -58,8 +58,11 @@ class ResponseAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         if request.user.is_superuser:
             return ['last_edit']
+        elif obj.moderator == request.user:
+            return ['moderator', 'response_status', 'last_edit']
         else:
-            return ['moderator', 'last_edit', 'response_status']
+            return ['tag', 'text', 'legal_basis', 'source', 'moderator', 'response_status', 'legal_status_as_of',
+                    'last_edit']
 
     def save_model(self, request, obj: Response, form, change):
         if not request.user.is_superuser:

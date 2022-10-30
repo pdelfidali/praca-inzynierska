@@ -63,6 +63,7 @@ class Response(models.Model):
 class Pattern(models.Model):
     text = models.TextField(max_length=1000, verbose_name="Treść wzorca")
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, blank=True, null=True)
+    timestamp = models.DateTimeField(default=datetime.datetime.now(), verbose_name="Data zgłoszenia")
 
     def __str__(self):
         return f'{self.text} [{self.tag}]'
