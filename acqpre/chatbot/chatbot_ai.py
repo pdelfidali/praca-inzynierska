@@ -25,7 +25,7 @@ def process_message(text):
 def train_model():
     X = []
     y = []
-    labels = Tag.objects.exclude(name='nierozpoznane zapytanie').values_list('id', flat=True).distinct()
+    labels = Tag.objects.all().values_list('id', flat=True).distinct()
     labels_zeros = [0 for _ in range(Tag.objects.count())]
 
     for tag in Tag.objects.exclude(name='nierozpoznane zapytanie'):
@@ -73,6 +73,7 @@ def chat(inp):
         if pers_names:
             for persName in pers_names:
                 text = text.replace(persName, "Imię Nazwisko")
-        pattern = Pattern(text=text)
-        pattern.save()
+        if text not in set(x[0] for x in Pattern.objects.all().values_list('text')):
+            pattern = Pattern(text=text)
+            pattern.save()
         return Response.objects.get(tag__name=UNDER_THRESHOLD_TAG)
