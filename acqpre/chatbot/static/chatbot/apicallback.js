@@ -1,4 +1,4 @@
-function displayMessage(text, is_user = 0, href = null) {
+function displayMessage(text, is_user = 0, href = null, legal_basis = null) {
     const message = document.createElement('p')
     message.innerHTML = text
     if (is_user === 1) {
@@ -10,9 +10,7 @@ function displayMessage(text, is_user = 0, href = null) {
     chat.appendChild(message)
     chat.style.overflowY = 'scroll';
     if (!document.cookie.includes("Powitanie") && !document.cookie.includes("nierozpoznane zapytanie") && !document.cookie.includes("Pożegnanie") && is_user === 0) {
-        if (href) {
-            addSource(href)
-        }
+        addSourceAndLegalBasis(href, legal_basis)
         addRatingButtons()
     }
 
@@ -34,7 +32,7 @@ function sendMessage() {
             if (xhr.status === 200) {
                 let responseMessage = JSON.parse(this.response)
                 document.cookie = "tag=" + responseMessage.tag
-                displayMessage(responseMessage.message, 0, responseMessage.source)
+                displayMessage(responseMessage.message, 0, responseMessage.source, responseMessage.legal_basis)
             }
         }
         xhr.send(JSON.stringify(json));
@@ -125,10 +123,16 @@ function getCookie(name) {
 }
 
 
-function addSource(href) {
+function addSourceAndLegalBasis(href, legal_basis) {
     let div = document.createElement("div")
-    div.className = 'mb-3'
-    let inner = `<a target="_blank" class="btn btn-primary" href="` + href + `"> Źródło </a>`
+    div.className = 'd-flex dlex-row'
+    let inner = ``;
+    if (legal_basis){
+        inner += `<p class="p-2">` + legal_basis + `</p>`
+    }
+    if (href){
+       inner += `<a target="_blank" class="btn btn-primary" href="` + href + `"> Źródło </a>`
+    }
     div.innerHTML = inner
     document.getElementById("chat").appendChild(div)
 }
