@@ -1,10 +1,9 @@
 import numpy as np
 import spacy
-import tensorflow as tf
-import tflearn
 from nltk.stem.lancaster import LancasterStemmer
 from sklearn import preprocessing
 
+from .ml.models import neuralnetwork
 from .models import Tag, Pattern, Response
 
 stemmer = LancasterStemmer()
@@ -27,43 +26,17 @@ def process_message(text):
 
 
 def train_model():
-    X = []
-    y = []
-    labels = Tag.objects.exclude(name='nierozpoznane zapytanie').values_list('name', flat=True)
     global label_dict
-    label_dict= {i: label for i, label in enumerate(labels)}
-    label_dict.update(dict((label_dict[k], k) for k in label_dict))
-    patterns = Pattern.objects.exclude(tag=None)
-    for pattern in patterns:
-        X.append(process_message(pattern.text))
-        _labels = [0 for _ in range(len(labels))]
-        _labels[label_dict[pattern.tag.name]] = 1
-        y.append(_labels)
-    tf.compat.v1.reset_default_graph()
-
-    net = tflearn.input_data(shape=[None, len(X[0])])
-    net = tflearn.fully_connected(net, 8)
-    net = tflearn.fully_connected(net, 8)
-    net = tflearn.fully_connected(net, len(labels), activation="softmax")
-    net = tflearn.regression(net)
-
-    global model
-    model = tflearn.DNN(net)
-
-    X = np.array(X)
-    y = np.array(y)
-
-    model.fit(X, y, n_epoch=1000, batch_size=8, show_metric=True)
-    model.save("model.tflearn")
 
 
-def chat(inp):
+
+
+def chat(user_input):
     global label_dict
     if not model:
         train_model()
-    x = np.array(process_message(inp)).reshape((1, 300))
+    x = np.array(process_message(user_input)).reshape((1, 300))
     results = model.predict(x)
-    print(results)
     if np.max(results) > THRESHOLD:
         results_index = np.argmax(results)
         tag = Tag.objects.get(name=label_dict[results_index])
@@ -71,7 +44,7 @@ def chat(inp):
         return x
     else:
         pers_names = []
-        doc = nlp(inp)
+        doc = nlp(user_input)
         text = doc.text
         for ent in doc.ents:
             if ent.label_ == "persName":
