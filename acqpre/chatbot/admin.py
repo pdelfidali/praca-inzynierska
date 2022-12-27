@@ -6,6 +6,10 @@ from .models import Tag, Response, Pattern, Rating, Report
 
 
 # Register your models here.
+class TagInLine(admin.StackedInline):
+    model = Tag
+
+
 class ResponseInLine(admin.StackedInline):
     model = Response
     can_delete = False
@@ -16,10 +20,6 @@ class ResponseInLine(admin.StackedInline):
 class PatternInLine(admin.StackedInline):
     model = Pattern
     extra = 1
-
-
-class TagInLine(admin.StackedInline):
-    model = Tag
 
 
 class TagAdmin(admin.ModelAdmin):
@@ -53,7 +53,6 @@ class ResponseAdmin(admin.ModelAdmin):
                     'rating_avg', 'rating_no']
     list_filter = ['moderator', 'response_status']
     search_fields = ['tag__name', 'legal_basis']
-    sortable_by = ['last_edit', 'legal_status_as_of']
 
     def get_readonly_fields(self, request: HttpRequest, obj=None):
         if request.user.is_superuser:

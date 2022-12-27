@@ -6,7 +6,7 @@ from django.db import models
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, verbose_name="Nazwa")
     amount = models.IntegerField(default=0, verbose_name="Ilość zwróconych odpowiedzi")
 
     def __str__(self):
@@ -16,9 +16,6 @@ class Tag(models.Model):
         verbose_name_plural = "Tagi"
         verbose_name = "Tag"
 
-
-# TODO: dodać do tagu bool czy jest aktywny (możliwy do zwrócenia przez bota, jeżeli nieaktywny to zmień na domyślną
-#  wiadomość), który będzie automatycznie zmieniany przez zmian statusu administratora
 class Response(models.Model):
     def validate_date(self):
         if self > datetime.date.today():

@@ -1,47 +1,46 @@
 import numpy as np
 import spacy
+
+nlp = spacy.load('pl_core_news_lg')
+
 from nltk.stem.lancaster import LancasterStemmer
 from sklearn import preprocessing
 
-from .ml.models import neuralnetwork
+from .ml.helpers import get_data
+from .ml.models import best_model
 from .models import Tag, Pattern, Response
 
 stemmer = LancasterStemmer()
 label_encoder = preprocessing.LabelEncoder()
-nlp = spacy.load('pl_core_news_lg')
 model = None
 words = None
-THRESHOLD = 0.5
+THRESHOLD = 0.4
 UNDER_THRESHOLD_TAG = 'nierozpoznane zapytanie'
+vectorizer = None
 
 label_dict = {}
 
 
-def get_data():
-    train_model()
-
-
 def process_message(text):
-    return nlp(text).vector
+    return vectorizer.transform([text, ])
 
 
 def train_model():
-    global label_dict
-
-
+    global model, vectorizer
+    X, y, vectorizer = get_data(False)
+    model = best_model(X, y)
 
 
 def chat(user_input):
-    global label_dict
     if not model:
         train_model()
-    x = np.array(process_message(user_input)).reshape((1, 300))
-    results = model.predict(x)
-    if np.max(results) > THRESHOLD:
-        results_index = np.argmax(results)
-        tag = Tag.objects.get(name=label_dict[results_index])
-        x = Response.objects.get(tag=tag)
-        return x
+    x = process_message(user_input)
+    result_index = np.argmax(model.predict(x))
+    probabilities = model.predict_proba(x)
+    max_prob = probabilities[result_index][0][1]
+    if max_prob >= THRESHOLD:
+        tag = Tag.objects.get(id=result_index + 1)
+        return Response.objects.get(tag=tag)
     else:
         pers_names = []
         doc = nlp(user_input)
