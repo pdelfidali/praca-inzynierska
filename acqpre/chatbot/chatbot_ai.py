@@ -12,6 +12,7 @@ from .models import Tag, Pattern, Response
 
 stemmer = LancasterStemmer()
 label_encoder = preprocessing.LabelEncoder()
+
 model = None
 words = None
 THRESHOLD = 0.4

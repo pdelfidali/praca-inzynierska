@@ -147,6 +147,6 @@ def neuralNetwork(X_train, X_test, y_train, y_test):
 
 
 def best_model(X, y):
-    model = KNeighborsClassifier()
+    model = KNeighborsClassifier(weights='uniform', algorithm='auto', n_neighbors=5)
     model.fit(X, y)
     return model
